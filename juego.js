@@ -1,41 +1,86 @@
 class Dado{
-    numero = 0
+    constructor(){}
 
     rodarDado(){
-        this.numero = Math.ceil(Math.random() * 6)
-        return this.numero
-    }
-}
-
-class Jugador{
-    constructor(color) {
-        this.color = color
-    }
-
-    avance(){
-        let dado = new Dado()
-        return dado.rodarDado()
+        return Math.ceil(Math.random() * 6)
     }
 }
 
 class Tablero{
-    arrayTablero = new Array(
-        0,1,2,3,4,5,6,7,8,9,
-        10,11,12,13,14,15,16,17,18,19,
-        20,21,22,23,24,25,26,27,28,29,
-        30,31,32,33,34,35,36,37,38,39,
-        40,41,42,43,44,45,46,47,48,49,
-        50,51,52,53,54,55,56,57,58,59,
-        60,61,62,63,64,65,66,67,68,69,
-        70,71,72,73,74,75,76,77,78,79,
-        80,81,82,83,84,85,86,87,88,89,
-        90,91,92,93,94,95,96,97,98,99,100)
+    constructor(){
+        this.escalerasInicio = [2,7,8,15,21,27,28,51,71,78]
+        this.escalerasFinal  = [38,14,31,26,42,84,44,67,91,98]
+        this.serpientesInicio = [16,46,49,62,64,74,89,92,95,99]
+        this.serpientesFinal = [6,25,11,19,60,53,68,88,75,80]
+    }
+    escalera(posicion){
+        for(let i = 0; i < 10; i++) {
+            if(posicion == this.escalerasInicio[i]){
+                posicion = this.escalerasFinal[i]
+                return posicion
+            }
+        }
+        return posicion
+    }
+    serpiente(posicion){
+        for(let i = 0; i < 10; i++) {
+            if(posicion == this.serpientesInicio[i]){
+                posicion = this.serpientesFinal[i]
+                return posicion
+            }
+        }
+        return posicion
+    }
+}
 
-    verLugar(lugar){
-        if(lugar <= 100) {
-            return this.arrayTablero[lugar]
-        }else {
-            return 100
+class Jugador{
+    constructor(numJugador){
+        this.numJugador = numJugador
+        this.posicion = 0;
+    }
+
+    avance(){
+
+        let tablero = new Tablero()
+        let dado = new Dado()
+        
+        let cara = dado.rodarDado()
+
+        this.posicion += cara
+        this.posicion = tablero.escalera(this.posicion)
+        this.posicion = tablero.serpiente(this.posicion)
+
+        return this.posicion
+    }
+}
+
+class Juego{
+    constructor(){
+        this.final = 100
+        this.tablero = new Tablero()
+        this.ganador = null
+        
+    }
+
+    empezarJuego(){
+
+        let j1 = new Jugador("Jugador 1")
+        let j2 = new Jugador("Jugador 2")
+
+        while(j1.posicion < 100 && j2.posicion < 100) {
+            
+            console.log(`${j1.numJugador}, esta en la posición ${j1.avance()}, 
+            ${j2.numJugador}, esta en la posición ${j2.avance()}`)
+        }
+
+        if (j1.posicion >= this.final) {
+            this.ganador = `El ${j1.numJugador}, ha ganado`
+            console.log(this.ganador)
+        } else {
+            this.ganador = `El ${j2.numJugador}, ha ganado`
+            console.log(this.ganador)
         }
     }
 }
+let app = new Juego()
+app.empezarJuego()

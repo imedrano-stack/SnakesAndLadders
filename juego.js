@@ -6,3 +6,14 @@ class Dado{
         return this.numero
     }
 }
+
+class Jugador{
+    constructor(color) {
+        this.color = color
+    }
+
+    avance(){
+        let dado = new Dado()
+        return dado.rodarDado()
+    }
+}
